@@ -59,7 +59,7 @@ def get_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def subcommand_run(paths: List[pathlib.Path], *, timeout: float = 600, tle: float = 60, jobs: int = 1) -> onlinejudge_verify.verify.VerificationSummary:
+def subcommand_run(paths: List[pathlib.Path], *, timeout: float = 600, tle: float = 60, jobs: int = 1, timestamp_push: bool = True) -> onlinejudge_verify.verify.VerificationSummary:
     """
     :raises Exception: if test.sh fails
     """
@@ -83,7 +83,7 @@ def subcommand_run(paths: List[pathlib.Path], *, timeout: float = 600, tle: floa
             return onlinejudge_verify.verify.main(paths, marker=marker, timeout=timeout, tle=tle, jobs=jobs)
     finally:
         # push results even if some tests failed
-        if does_push:
+        if does_push and timestamp_push:
             push_timestamp_to_branch()
 
 
@@ -310,6 +310,14 @@ def main(args: Optional[List[str]] = None) -> None:
 
     elif parsed.subcommand == 'stats':
         subcommand_stats(jobs=parsed.jobs)
+
+    elif parsed.subcommand == 'test':
+        _delete_gitignore()
+        generate_gitignore()
+        summary = subcommand_run(paths=parsed.path, timeout=parsed.timeout, tle=parsed.tle, jobs=parsed.jobs, timestamp_push=False)
+        summary.show()
+        if not summary.succeeded():
+            sys.exit(1)
 
     else:
         parser.print_help()
