@@ -56,8 +56,13 @@ def get_parser() -> argparse.ArgumentParser:
     subparser = subparsers.add_parser('stats')
     subparser.add_argument('-j', '--jobs', type=int, default=1)
 
-    return parser
+    subparser = subparsers.add_parser('test')
+    subparser.add_argument('path', nargs='*', type=pathlib.Path)
+    subparser.add_argument('-j', '--jobs', type=int, default=1)
+    subparser.add_argument('--timeout', type=float, default=600)
+    subparser.add_argument('--tle', type=float, default=60)
 
+    return parser
 
 def subcommand_run(paths: List[pathlib.Path], *, timeout: float = 600, tle: float = 60, jobs: int = 1, timestamp_push: bool = True) -> onlinejudge_verify.verify.VerificationSummary:
     """
