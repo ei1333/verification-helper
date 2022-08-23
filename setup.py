@@ -6,7 +6,7 @@ setup(
     version='5.6.0',
     author='Kimiyuki Onaka',
     author_email='kimiyuki95@gmail.com',
-    url='https://github.com/ei1333/verification-helper',
+    url='https://github.com/kmyk/online-judge-verify-helper',
     license='MIT License',
     description='',
     python_requires='>=3.6',
